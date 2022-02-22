@@ -2,26 +2,26 @@ const METRIC=10
 const OFFSET_MATRIX = [
   // Square
   [
-    {x:0,y:-10,r:0},
-    {x:10,y:0,r:0},
-    {x:0,y:10,r:0},
-    {x:-10,y:0,r:0},
+    {x:10,y:0,r:180},  // Top
+    {x:10,y:10,r:270}, // Right
+    {x:0,y:10,r:0},    // Bottom
+    {x:0,y:0,r:90},    // Left
   ],
-  // NE notch
+  // Right Corner
   [
-    {x:10,y:-7,r:45},
-    {x:0,y:10,r:0},
-    {x:-10,y:0,r:0},
+    {x:0,y:3,r:45},
+    {x:10,y:10,r:270},
+    {x:10,y:0,r:180},
     null,
   ],
-  // flat-on notch TODO
+  // Face-On Corner
   [
-    {x:0,y:-10,r:0},
-    {x:10,y:0,r:0},
+    {x:0,y:0,r:180},
+    {x:10,y:10,r:0},
     {x:0,y:10,r:0},
-    {x:-10,y:0,r:0},
+    {x:-10,y:10,r:0},
   ],
-  // NW notch TODO
+  // Left Corner
   [
     {x:0,y:7,r:225},
     {x:10,y:0,r:225},
@@ -70,13 +70,13 @@ function createComponent(component, offset) {
       foo = createSquare()
       break
     case 1:
-      foo = createCorner(0)
+      foo = createRightCorner()
       break
     case 2:
-      foo = createCorner(135)
+      foo = createFaceOnCorner()
       break
     case 3:
-      foo = createCorner(270)
+      foo = createLeftCorner()
       break
     default:
     console.error('unknown object type ' + schematic[0])
@@ -104,12 +104,21 @@ function createSquare() {
   return foo
 }
 
-function createCorner(rotation) {
-  const translationMatrix = {0: '0,0', 135: '-3,-14', 270: '-10,0'}
-  const g = createSvg('g')
+function createRightCorner() {
   const foo = createSvg('polygon')
-  foo.setAttribute('points', '0,0 3,0 10,7 10,10 0,10')
-  g.setAttribute('transform', `rotate(${rotation}) translate(${translationMatrix[rotation]})`)
-  g.appendChild(foo)
-  return g
+  foo.setAttribute('points', '0,0 0,3 7,10 10,10 10,0')
+  return foo
 }
+
+function createLeftCorner() {
+  const foo = createSvg('polygon')
+  foo.setAttribute('points', '0,0 0,10 3,10 10,3 10,0')
+  return foo
+}
+
+function createFaceOnCorner() {
+  const foo = createSvg('polygon')
+  foo.setAttribute('points', '0,0 -2,2 5,9 12,2 10,0')
+  return foo
+}
+
