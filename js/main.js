@@ -14,24 +14,17 @@ const OFFSET_MATRIX = [
     {x:-10,y:0,r:0},
     null,
   ],
-  // NE notch TODO
+  // flat-on notch TODO
   [
     {x:0,y:-10,r:0},
     {x:10,y:0,r:0},
     {x:0,y:10,r:0},
     {x:-10,y:0,r:0},
   ],
-  // NE notch TODO
+  // NW notch TODO
   [
-    {x:0,y:-10,r:0},
-    {x:10,y:0,r:0},
-    {x:0,y:10,r:0},
-    {x:-10,y:0,r:0},
-  ],
-  // NE notch TODO
-  [
-    {x:0,y:-10,r:0},
-    {x:10,y:0,r:0},
+    {x:0,y:7,r:225},
+    {x:10,y:0,r:225},
     {x:0,y:10,r:0},
     {x:-10,y:0,r:0},
   ],
@@ -80,12 +73,9 @@ function createComponent(component, offset) {
       foo = createCorner(0)
       break
     case 2:
-      foo = createCorner(90)
+      foo = createCorner(135)
       break
     case 3:
-      foo = createCorner(180)
-      break
-    case 4:
       foo = createCorner(270)
       break
     default:
@@ -115,7 +105,7 @@ function createSquare() {
 }
 
 function createCorner(rotation) {
-  const translationMatrix = {0: '0,0', 90: '0,-10', 180: '-10,-10', 270: '-10,0'}
+  const translationMatrix = {0: '0,0', 135: '-3,-14', 270: '-10,0'}
   const g = createSvg('g')
   const foo = createSvg('polygon')
   foo.setAttribute('points', '0,0 3,0 10,7 10,10 0,10')
