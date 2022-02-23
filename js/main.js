@@ -1,4 +1,5 @@
 const METRIC = 10
+// TODO - move the roation point for more accuate off angles?
 const OFFSET_MATRIX = [
   // Square
   [
@@ -13,8 +14,8 @@ const OFFSET_MATRIX = [
   ],
   // Face-On Corner
   [
-    { x: 5, y: 9, r: 315 }, // Right - TODO this math is very slightly wrong
-    { x: -2, y: 2, r: 45 }, // Left
+    { x: 2, y: 2, r: '-45,10,0' }, // Left
+    { x: -2, y: 2, r: 45 }, // Right
   ],
   // Left Corner
   [
