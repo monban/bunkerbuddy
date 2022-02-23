@@ -1,32 +1,25 @@
-const METRIC=10
+const METRIC = 10
 const OFFSET_MATRIX = [
   // Square
   [
-    {x:10,y:0,r:180},  // Top
-    {x:10,y:10,r:270}, // Right
-    {x:0,y:10,r:0},    // Bottom
-    {x:0,y:0,r:90},    // Left
+    { x: 0, y: METRIC, r: 0 },  // Opposite
+    { x: METRIC, y: METRIC, r: 270 }, // Right
+    { x: 0, y: 0, r: 90 },    // Left
   ],
   // Right Corner
   [
-    {x:0,y:3,r:45},
-    {x:10,y:10,r:270},
-    {x:10,y:0,r:180},
-    null,
+    { x: 0, y: 3, r: 45 }, // Face-on
+    { x: METRIC, y: METRIC, r: 270 }, // Flat
   ],
   // Face-On Corner
   [
-    {x:0,y:0,r:180},
-    {x:10,y:10,r:0},
-    {x:0,y:10,r:0},
-    {x:-10,y:10,r:0},
+    { x: 5, y: 9, r: 315 }, // Right - TODO this math is very slightly wrong
+    { x: -2, y: 2, r: 45 }, // Left
   ],
   // Left Corner
   [
-    {x:0,y:7,r:225},
-    {x:10,y:0,r:225},
-    {x:0,y:10,r:0},
-    {x:-10,y:0,r:0},
+    { x: 3, y: METRIC, r: 315 }, // Face-on
+    { x: 0, y: 0, r: 90 }, // Flat
   ],
 ]
 
@@ -34,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const schematic = document.getElementById('schematic')
   schematic.addEventListener('input', (evt) => {
     try {
-      const newData = evt.target.value
-      drawSchematic(JSON.parse(newData))
+      const newData = JSON.parse(evt.target.value)
+      drawSchematic(newData)
     } catch (e) {
       console.warn(e)
     }
@@ -48,25 +41,41 @@ function createSvg(elm) {
 }
 
 function drawSchematic(schematic) {
-  if (!(Array.isArray(schematic) && schematic.length == 5)) {
-    console.error("schematic must be array of length 5")
+  const baseOffsets = [
+    { x: METRIC, y: 0, r: 180 },
+    { x: METRIC, y: METRIC, r: 270 },
+    { x: 0, y: METRIC, r: 0 },
+    { x: 0, y: 0, r: 90 }
+  ]
+  if (!Array.isArray(schematic)) {
+    console.error("schematic must be array")
     return
   }
   const diagram = document.getElementById('diagram')
   while (diagram.firstChild) {
     diagram.firstChild.remove()
   }
-  diagram.appendChild(createComponent(schematic, {x:70,y:50,r:0}))
+  const g = createSvg('g')
+  g.setAttribute('transform', 'translate(70,50)')
+  const base = createComponent([0], { x: 0, y: 0, r: 0 })
+  g.appendChild(base)
+  for (let i = 0; i < 4; i++) {
+    if (Array.isArray(schematic[i])) {
+      g.appendChild(createComponent(schematic[i], baseOffsets[i]))
+    }
+  }
+  diagram.appendChild(g)
 }
 
 function createComponent(component, offset) {
-  console.log('drawing component: ' + component + ' with offset ' + JSON.stringify(offset))
-  if (!Array.isArray(component)) {
+  const components = ['square', 'right corner', 'face-on corner', 'left corner']
+  if ((!Array.isArray(component) && component.length > 1)) {
     return
   }
+  console.log('drawing ' + components[component[0]] + ' with offset ' + JSON.stringify(offset))
   const g = createSvg('g')
   switch (component[0]) {
-    case 0: 
+    case 0:
       foo = createSquare()
       break
     case 1:
@@ -79,26 +88,30 @@ function createComponent(component, offset) {
       foo = createLeftCorner()
       break
     default:
-    console.error('unknown object type ' + schematic[0])
+      console.error('unknown object type ' + schematic[0])
   }
-  console.log('appending ' + foo + ' to ' + g)
   g.appendChild(foo)
+  g.appendChild(createMarker())
   g.setAttribute('transform', `translate(${offset.x},${offset.y}) rotate(${offset.r})`)
-  for (let i=0; i < 4; i++) {
-    if (component[i+1]) {
+  for (let i = 0; i < 4; i++) {
+    if (component[i + 1]) {
       let offset = OFFSET_MATRIX[component[0]][i]
       if (offset) {
-        g.appendChild(createComponent(component[i+1], offset))
+        g.appendChild(createComponent(component[i + 1], offset))
       }
     }
   }
   return g
 }
 
+function createMarker() {
+  const marker = createSvg('circle')
+  marker.setAttribute('r', 1)
+  return marker
+}
+
 function createSquare() {
   const foo = createSvg('rect')
-  foo.setAttribute('x', 0)
-  foo.setAttribute('y', 0)
   foo.setAttribute('width', METRIC)
   foo.setAttribute('height', METRIC)
   return foo
