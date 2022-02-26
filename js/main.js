@@ -30,12 +30,24 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const newData = JSON.parse(evt.target.value)
       drawSchematic(newData)
+      document.querySelectorAll('polygon').forEach((elm) => {
+        console.log(elm)
+      })
     } catch (e) {
       console.warn(e)
     }
   })
   drawSchematic(JSON.parse(schematic.value))
 })
+
+function clickHandler(evt) {
+  console.log('selected ' + evt.target)
+  oldActive = document.querySelector('.active')
+  if (oldActive) {
+    oldActive.classList.remove('active')
+  }
+  evt.target.classList.add('active')
+}
 
 function createSvg(elm) {
   return document.createElementNS('http://www.w3.org/2000/svg', elm)
@@ -91,6 +103,7 @@ function createComponent(component, offset) {
     default:
       console.error('unknown object type ' + schematic[0])
   }
+  foo.addEventListener('click', clickHandler)
   g.appendChild(foo)
   g.appendChild(createMarker())
   g.setAttribute('transform', `translate(${offset.x},${offset.y}) rotate(${offset.r})`)
