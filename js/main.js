@@ -41,12 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 function clickHandler(evt) {
-  console.log('selected ' + evt.target)
+  const active = evt.target
+  console.log('selected ' + active)
   oldActive = document.querySelector('.active')
   if (oldActive) {
     oldActive.classList.remove('active')
   }
-  evt.target.classList.add('active')
+  active.classList.add('active')
+
+  const current = document.getElementById('current-component')
+  while (current.firstChild) {
+    current.firstChild.remove()
+  }
+  current.appendChild(active.parentNode.cloneNode(true))
 }
 
 function createSvg(elm) {
