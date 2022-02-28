@@ -25,6 +25,8 @@ const OFFSET_MATRIX = [
 ]
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('left').addEventListener('click', decrementType)
+  document.getElementById('right').addEventListener('click', incrementType)
   const schematic = document.getElementById('schematic')
   schematic.addEventListener('input', (evt) => {
     try {
@@ -39,6 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
   })
   drawSchematic(JSON.parse(schematic.value))
 })
+
+function decrementType() {
+}
 
 function clickHandler(evt) {
   const active = evt.target
